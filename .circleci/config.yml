@@ -104,7 +104,7 @@ workflows:
             - api-build
 
   app:
-    when: << pipeline.parameters.app >>
+    #when: << pipeline.parameters.app >>
     jobs:
       - build:
           name: app-build
@@ -116,7 +116,7 @@ workflows:
             - app-build
 
   auth:
-    when: << pipeline.parameters.auth >>
+    #when: << pipeline.parameters.auth >>
     jobs:
       - build:
           name: auth-build
@@ -128,7 +128,7 @@ workflows:
             - auth-build
 
   gateway:
-    when: << pipeline.parameters.gateway >>
+    #when: << pipeline.parameters.gateway >>
     jobs:
       - build:
           name: gateway-build
