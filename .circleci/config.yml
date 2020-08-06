@@ -35,6 +35,7 @@ jobs:
           block-workflow: true
           time: "10"
           consider-branch: true
+          circleci-api-key : CIRCLE_TOKEN
       - run:
           name: Trigger workflows
           command: chmod +x .circleci/circle_trigger.sh && .circleci/circle_trigger.sh
