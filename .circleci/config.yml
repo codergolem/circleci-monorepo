@@ -30,6 +30,11 @@ jobs:
     executor: node
     steps:
       - checkout
+      - queue/until_front_of_line:
+          only-on-branch: master
+          block-workflow: true
+          time: "10"
+          consider-branch: true
       - run:
           name: Trigger workflows
           command: chmod +x .circleci/circle_trigger.sh && .circleci/circle_trigger.sh
@@ -77,7 +82,8 @@ jobs:
       - deploy:
           name: Deploy
           command: echo "Deploying << parameters.package_name >> ..."
-
+orbs:
+  queue: eddiewebb/queue@volatile
 workflows:
   version: 2
 
