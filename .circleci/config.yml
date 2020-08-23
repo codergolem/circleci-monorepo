@@ -10,8 +10,13 @@ jobs:
     docker:
       - image: circleci/node:12
     working_directory: /home/circleci/project/
+    environment:
+      CIRCLE_COMPARE_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<<pipeline.git.revision>>
     steps:
       - checkout
+      - run:
+          name: Build
+          command: echo "${CIRCLE_COMPARE_URL}"
       - swissknife/trigger-workflows-for-all-modified:
           base-branch: master
           run-mode-for-base-branch: run_for_last_commit
