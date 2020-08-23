@@ -61,6 +61,9 @@ jobs:
       - attach_workspace:
           at: ~/project
       # This step is added to show that files are available from the build job. 
+      - swissknife/wait_for_workflow:
+          max-wait-time: '1800'
+          workflow-name: ^(app)$
       - run:
           name: Content to deploy
           command: ls && cat build.txt
