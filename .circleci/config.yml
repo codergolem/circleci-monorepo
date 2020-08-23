@@ -55,8 +55,10 @@ jobs:
         type: string
 
     executor: node
+    environment:
+      CIRCLE_COMPARE_URL: << pipeline.project.git_url >>/compare/<< pipeline.git.base_revision >>..<<pipeline.git.revision>>
+      REVISION: << pipeline.git.base_revision >>
     working_directory: ~/project/packages/<< parameters.package_name >>
-
     steps:
       - attach_workspace:
           at: ~/project
@@ -67,7 +69,10 @@ jobs:
           sleep-time-between-checks: '5'
       - run:
           name: Content to deploy
-          command: sleep 1s
+          command: echo "${CIRCLE_COMPARE_URL}"
+      - run:
+          name: Content to deploy
+          command: echo "${REVISION}"
       - deploy:
           name: Deploy
           command: echo "Deploying << parameters.package_name >> ..."
