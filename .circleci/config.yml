@@ -86,7 +86,7 @@ workflows:
             - api-build
 
   app:
-    when: << pipeline.parameters.run_api >>
+    when: << pipeline.parameters.run_app >>
     jobs:
       - build:
           name: app-build
