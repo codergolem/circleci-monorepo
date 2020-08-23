@@ -36,9 +36,6 @@ jobs:
       - checkout:
           path: ~/project
       # This step is added only to show that we are in the package directory
-      - swissknife/wait_for_workflow:
-          max-wait-time: '1800'
-          workflow-name: ^(app)$
       - run:
           name: Content 
           command: |
