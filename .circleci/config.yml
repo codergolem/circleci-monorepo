@@ -18,9 +18,9 @@ jobs:
           use-divergence-point: true
           code-param-name-map: '
             [
-              {"regex": "^(package/api).*", "param_name": "run_api"},
-              {"regex": "^(package/app).*", "param_name": "run_app"},
-              {"regex": "^(package/gateway).*", "param_name": "run_gateway"}
+              {"regex": "^(packages/api).*", "param_name": "run_api"},
+              {"regex": "^(packages/app).*", "param_name": "run_app"},
+              {"regex": "^(packages/gateway).*", "param_name": "run_gateway"}
             ]'
           additional-param-map: '{"run_trigger_workflow": false}'
           use-swissknife-sha: true
