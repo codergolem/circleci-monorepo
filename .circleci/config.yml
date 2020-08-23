@@ -67,7 +67,7 @@ jobs:
           sleep-time-between-checks: '5'
       - run:
           name: Content to deploy
-          command: sleep 30s
+          command: sleep 1s
       - deploy:
           name: Deploy
           command: echo "Deploying << parameters.package_name >> ..."
