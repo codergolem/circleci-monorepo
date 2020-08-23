@@ -64,9 +64,10 @@ jobs:
       - swissknife/wait_for_workflow:
           max-wait-time: '1800'
           workflow-name: ^(app)$
+          sleep-time-between-checks: '5'
       - run:
           name: Content to deploy
-          command: echo "deploy"
+          command: slepp 60s
       - deploy:
           name: Deploy
           command: echo "Deploying << parameters.package_name >> ..."
