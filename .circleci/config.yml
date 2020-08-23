@@ -1,45 +1,29 @@
 version: 2.1
-
-parameters:
-  # This parameter is used to trigger the main workflow
-  trigger:
-    type: boolean
-    default: true
-
-  # A parameter per package
-  api:
-    type: boolean
-    default: false
-  app:
-    type: boolean
-    default: false
-  auth:
-    type: boolean
-    default: false
-  gateway:
-    type: boolean
-    default: false
-
 executors:
   node:
     docker:
       - image: circleci/node
-
+orbs:
+  swissknife: roopakv/swissknife@0.37.0
 jobs:
-  trigger-workflows:
-    executor: node
+  trigger-needed-workflows:
+    docker:
+      - image: circleci/node:12
+    working_directory: /home/circleci/project/
     steps:
       - checkout
-      - queue/until_front_of_line:
-          only-on-branch: master
-          block-workflow: true
-          time: "10"
-          consider-branch: true
-          circleci-api-key : CIRCLE_TOKEN
-      - run:
-          name: Trigger workflows
-          command: chmod +x .circleci/circle_trigger.sh && .circleci/circle_trigger.sh
-
+      - swissknife/trigger-workflows-for-all-modified:
+          base-branch: master
+          run-mode-for-base-branch: run_for_last_commit
+          use-divergence-point: true
+          code-param-name-map: '
+            [
+              {"regex": "^(package/api).*", "param_name": "run_api"},
+              {"regex": "^(package/app).*", "param_name": "run_app"},
+              {"regex": "^(package/gateway).*", "param_name": "run_gateway"}
+            ]'
+          additional-param-map: '{"run_trigger_workflow": false}'
+          use-swissknife-sha: true
   build:
     parameters:
       package_name:
@@ -83,23 +67,14 @@ jobs:
       - deploy:
           name: Deploy
           command: echo "Deploying << parameters.package_name >> ..."
-orbs:
-  queue: eddiewebb/queue@volatile
+
 workflows:
-  version: 2
-
-  # The main workflow responsible for triggering all other workflows
-  # in which changes are detected.
-  ci:
-    when: << pipeline.parameters.trigger >>
+  trigger-needed-workflows:
+    when: << pipeline.parameters.run_trigger_workflow >>
     jobs:
-      - trigger-workflows
-
-
-  # Workflows defined for each package.
-
+      - trigger-needed-workflows
   api:
-    when: << pipeline.parameters.api >>
+    when: << pipeline.parameters.run_api >>
     jobs:
       - build:
           name: api-build
@@ -111,7 +86,7 @@ workflows:
             - api-build
 
   app:
-    when: << pipeline.parameters.app >>
+    when: << pipeline.parameters.run_api >>
     jobs:
       - build:
           name: app-build
@@ -121,21 +96,8 @@ workflows:
           package_name: app
           requires:
             - app-build
-
-  auth:
-    when: << pipeline.parameters.auth >>
-    jobs:
-      - build:
-          name: auth-build
-          package_name: auth
-      - deploy:
-          name: auth-deploy
-          package_name: auth
-          requires:
-            - auth-build
-
   gateway:
-    when: << pipeline.parameters.gateway >>
+    when: << pipeline.parameters.run_gateway >>
     jobs:
       - build:
           name: gateway-build
@@ -145,3 +107,21 @@ workflows:
           package_name: gateway
           requires:
             - gateway-build
+
+
+parameters:
+  run_api:
+    default: false
+    type: boolean
+  run_app:
+    default: false
+    type: boolean
+  run_gateway:
+    default: false
+    type: boolean
+  run_trigger_workflow:
+    default: true
+    type: boolean
+  swissknife_sha:
+    default: ""
+    type: string
