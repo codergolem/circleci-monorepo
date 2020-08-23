@@ -72,7 +72,7 @@ jobs:
           command: echo "${CIRCLE_COMPARE_URL}"
       - run:
           name: Content to deploy
-          command: echo "${REVISION}"
+          command: echo "<< pipeline.git.base_revision >>"
       - deploy:
           name: Deploy
           command: echo "Deploying << parameters.package_name >> ..."
