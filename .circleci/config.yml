@@ -60,7 +60,7 @@ jobs:
     steps:
       - swissknife/wait_for_workflow:
           max-wait-time: '1800'
-          workflow-name: app
+          workflow-name: ^(app)$
       - attach_workspace:
           at: ~/project
       # This step is added to show that files are available from the build job. 
